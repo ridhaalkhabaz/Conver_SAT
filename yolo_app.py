@@ -28,6 +28,9 @@ for filename in os.listdir(directory):
     f = os.path.join(directory, filename)
     # checking if it is a file
     if os.path.isfile(f):
+        if 'jpg' not in f:
+            continue
+        print(f)
         img = f 
         # perform detection 
         results = model.predict(img)

@@ -11,6 +11,8 @@
 
 ## Project overview
 Here, we study different methods to expediate and decrease the cost of information retrieval of geospatial imagery in urban planning applications. 
+## Software Details:
+make sure that you have `geopandas==0.10.2`. Also, for apple silicon users, vscode has some low-level compiling issues, try to use other text-editors to run and debug your code. 
 
 ### Relevant Publications
 * https://www.researchgate.net/publication/370635187_Autonomous_GIS_the_next-generation_AI-powered_GIS
@@ -25,8 +27,9 @@ Here, we study different methods to expediate and decrease the cost of informati
 
 ## File structure:
 
-* **Data**: 
-TBD
+* **Data**:
+  There are a few caveats to using the data. The data is in our `centers.csv` are sorted in the same manners our folder of images. Furthermore, we need to project the data using `.set_crs(3443, allow_override=True)` because there were some data corruption issues. Then, to get the accurate measures for our data, we need to project them using `to_crs(4326)`.
+  For our indexing, we will use precision=10 for local screening, and precision=5 for searching. 
 
 * **Running**:
 
