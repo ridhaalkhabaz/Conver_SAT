@@ -6,8 +6,8 @@ from PIL import Image
 import geopandas as gpd
 import geohash_hilbert as ghh
 import matplotlib.pyplot as plt
-class BBTree:
-    def __init__(self, bath_to_directory, parent_precision=4, child_precision=6, train_split=0.1, path_images='/Users/ridhaalkhabaz/Documents/mlds/images/', path_labels='/Users/ridhaalkhabaz/Documents/mlds/labels/'):
+class KdTree:
+    def __init__(self, bath_to_directory, parent_precision=4, child_precision=6, train_split=0.1, ratio=0.2, path_images='/Users/ridhaalkhabaz/Documents/mlds/images/', path_labels='/Users/ridhaalkhabaz/Documents/mlds/labels/'):
         ## please note that our
         self.direc = gpd.read_file(bath_to_directory).set_crs(3443, allow_override=True).to_crs(4326) #please not 3443 projection key is only becasue samples.geojson is corrupted 
         self.direc['center'] = self.direc['geometry'].centroid
@@ -15,9 +15,9 @@ class BBTree:
         self.child_precision = child_precision
         self.tree = {}
         self.tree = self._init_tree()
-        self.train_split = train_split
         self.path_images = path_images
         self.path_labels = path_labels
+        self.ratio = ratio
     def _init_tree(self):
         part = {}
         n = len(self.direc)
@@ -37,8 +37,8 @@ class BBTree:
             if part[hash_parent].get(hash_child) is None:
                 part[hash_parent][hash_child] = i 
         return part
-    def _find_train_indxs(self):
-        train_split = self.train_split 
+    def _find_train_test_indxs(self, split):
+        train_split = split 
         trainig_input = []
         for key in self.tree:
             sub_tree = self.tree.get(key)
@@ -65,4 +65,26 @@ class BBTree:
             plt.imshow(label)
         else:
             plt.imshow(Image.open(path_to_image))
-        
+    def _get_subtree_indxs(self, key, breadth_search=False):
+        desired_kys = [key]
+        desired = []
+        if breadth_search:
+            desired_kys.extend(list(ghh.neighbours(key).values()))
+        for key in desired_kys:
+            desired.extend(self.tree[key].values())
+        return desired 
+    def _get_key(self, idx):
+        if not isinstance(idx, int):
+            return None 
+        for key in self.tree.keys():
+            if idx in list(self.tree[key].values()):
+                for ky, indx in self.tree[key].items():
+                    if idx == indx:
+                        return ky
+        return None 
+    def _get_subtree_sample_indx(self, key, ratio=self.ratio):
+        indices = list(self.tree[key].values())
+        n = (indices)
+        n_sams = int(ratio*n)
+        return list(np.random.choice(indices, n_sams))
+    
