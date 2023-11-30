@@ -1,0 +1,16 @@
+indexing took:12.83274507522583
+meta reading took:13.373525857925415
+log fitting took:1.203773021697998
+log filtered set size (our):66000
+log filtering TP (our):9141
+log filtering took (our):0.03420114517211914
+log filtered set size (Scope):18124
+log filtering TP (Scope):7508
+log filtering took (Scope):0.01277303695678711
+cnn fitting took:412.09415674209595
+cnn filtered set size (Our):14788
+cnn filtering TP (Our):3126
+cnn filtering took (our):31.18891215324402
+cnn filtered set size (Scope):11919
+cnn filtering TP (Scope):1610
+cnn filtering took (Scope):173.19218707084656
