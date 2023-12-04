@@ -94,7 +94,7 @@ class binary_search_models:
 
 #- dataset for cnn filtering for training and filtering 
 class filter_dataset(Dataset):
-    def __init__(self, indices, metadata_path='./buildings/samples_bld.geojson', path_images= '/Users/ridhaalkhabaz/Documents/mlds/images/', path_labels='/Users/ridhaalkhabaz/Documents/mlds/labels/'):
+    def __init__(self, indices, metadata_path='./buildings/samples_bld.geojson', path_images= '/Users/ridhaalkhabaz/Documents/mlds/data/images/', path_labels='/Users/ridhaalkhabaz/Documents/mlds/data/labels/'):
         self.indices = indices
         self.data = []
         self.imgs_path = path_images

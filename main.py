@@ -33,9 +33,9 @@ images_path= '/Users/ridhaalkhabaz/Documents/mlds/data/images/'
 labels_path = '/Users/ridhaalkhabaz/Documents/mlds/data/labels/'
 parser = argparse.ArgumentParser(description='Query Replacer')
 parser.add_argument('--filtering', type=str, default='log')
-parser.add_argument('--ratio', type=float, default=0.1) # NMS confidence threshold
-parser.add_argument('--detect', type=str, default='special') # NMS IoU threshold
-# parser.add_argument('--agnostic_nms', action='store_false') # NMS class-agnostic
+parser.add_argument('--ratio', type=float, default=0.1) 
+parser.add_argument('--detect', type=str, default='special') 
+parser.add_argument('--pretrainedMod', type=str, default='./results/detection/resnet34_best_sec.pt') # NMS class-agnostic
 # parser.add_argument('--max_det', type=int, default=1000) # maximum number of detections per image
 
 args = parser.parse_args()
@@ -94,7 +94,7 @@ def indexing(mod_type, scope_filtering=False, model_pre_train_path=None):
         cnn_mod_class = binary_search_models('cnn',kdtree, meta_data)
         cnn_mod = cnn_mod_class.model
         cnn_fit_time = time.time()
-        cnn_fit_period = cnn_fit_time-log_filtering_time_scope
+        cnn_fit_period = cnn_fit_time-reading_meta_time
         # print('=============================================')
         # print('cnn fitting took {}'.format(cnn_fit_period))
         # print('=============================================')
@@ -184,7 +184,7 @@ print(res)
 dataObj = filter_data(path_to_images=images_path)
 # count, truth = detection('yolov8', idices, dataObj, pretrain_mod ='keremberke/yolov8n-building-segmentation', img_path = '/Users/ridhaalkhabaz/Documents/mlds/images/' )
 # print(count, truth)
-c, tru = detection(args.detect, idices, dataObj, img_path=images_path)
+c, tru = detection(args.detect, idices, dataObj,pretrain_mod=args.pretrainedMod, img_path=images_path)
 print(c, tru)
     # print(res)
     # filename = "iteration_results_num"+str(i) +".txt"

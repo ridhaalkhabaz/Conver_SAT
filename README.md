@@ -38,6 +38,16 @@ After downloading the data from [this link](https://uofi.box.com/s/nzdbbatyhouso
 # for log filtering at 10% ratio sampling and specialized neural nets for a detect 
 python main.py 
 ```
+```
+# for cnn filtering at 10% ratio sampling and   specialized neural nets for a detect 
+python main.py --filtering cnn
+```
+
+
+```
+# for log filtering at 10% ratio sampling and   yolo for a detect 
+python main.py --detect yolo --pretrainedMod keremberke/yolov8n-building-segmentation
+```
 
 * **Analysis**
 TBD 
