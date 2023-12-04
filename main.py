@@ -4,6 +4,7 @@ import os
 import sys
 import cv2
 import glob
+import argparse
 import torch 
 import scipy 
 import torchvision
@@ -27,17 +28,27 @@ from filtering_mods import *
 from detect import *
 torch.manual_seed(0)
 np.random.seed(0)
+# please change these to replicate the results 
+images_path= '/Users/ridhaalkhabaz/Documents/mlds/data/images/'
+labels_path = '/Users/ridhaalkhabaz/Documents/mlds/data/labels/'
+parser = argparse.ArgumentParser(description='Query Replacer')
+parser.add_argument('--filtering', type=str, default='log')
+parser.add_argument('--ratio', type=float, default=0.1) # NMS confidence threshold
+parser.add_argument('--detect', type=str, default='special') # NMS IoU threshold
+# parser.add_argument('--agnostic_nms', action='store_false') # NMS class-agnostic
+# parser.add_argument('--max_det', type=int, default=1000) # maximum number of detections per image
 
+args = parser.parse_args()
 def indexing(mod_type, scope_filtering=False, model_pre_train_path=None):
     ## indexing 
     res = {}
     keys = []
     begin_time = time.time()
-    kdtree = KdTree('./buildings/samples_bld.geojson')
+    kdtree = KdTree('./buildings/samples_bld.geojson', path_images=images_path, path_labels=labels_path)
     indexing_time = time.time()
     indexing_period = indexing_time-begin_time
     res['indexing took'] = indexing_period
-    meta_data = filter_data()
+    meta_data = filter_data(path_to_images=images_path)
     reading_meta_time = time.time()
     meta_reading_period = reading_meta_time-indexing_time
     res['meta reading took'] = meta_reading_period
@@ -123,17 +134,17 @@ def indexing(mod_type, scope_filtering=False, model_pre_train_path=None):
     # del log_mod, cnn_mod
     return res, keys
 
-def detection(mod_type, indices, dataObj, pretrain_mod ='./results/detection/resnet34_best_sec.pt', img_path = '/Users/ridhaalkhabaz/Documents/mlds/images/' ):
+def detection(mod_type, indices, dataObj, pretrain_mod ='./results/detection/resnet34_best_sec.pt', img_path = '/Users/ridhaalkhabaz/Documents/mlds/data/images/' ):
     begin_time = time.time()
     out = 0
-    if mod_type == 'tiny':
+    if mod_type == 'special':
         transform = v2.Compose([
         # v2.Resize(256),
         # v2.CenterCrop(224),
         v2.ToTensor(),
         v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ]) # used the same thing for training 
-        detec_dataset = detect_dataset(indices, transform=transform)
+        detec_dataset = detect_dataset(indices, transform=transform, path_images=images_path,path_labels=labels_path)
         detect_loader = DataLoader(detec_dataset, batch_size=32)
         detector = models.resnet34(pretrained=True)
         detector.fc = nn.Linear(detector.fc.in_features, 57)
@@ -168,12 +179,12 @@ def detection(mod_type, indices, dataObj, pretrain_mod ='./results/detection/res
     return out, truth
         
 
-res, idices = indexing('log')
-print(res, len(idices))
-dataObj = filter_data()
+res, idices = indexing(args.filtering)
+print(res)
+dataObj = filter_data(path_to_images=images_path)
 # count, truth = detection('yolov8', idices, dataObj, pretrain_mod ='keremberke/yolov8n-building-segmentation', img_path = '/Users/ridhaalkhabaz/Documents/mlds/images/' )
 # print(count, truth)
-c, tru = detection('tiny', idices, dataObj)
+c, tru = detection(args.detect, idices, dataObj, img_path=images_path)
 print(c, tru)
     # print(res)
     # filename = "iteration_results_num"+str(i) +".txt"

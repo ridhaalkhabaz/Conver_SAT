@@ -33,7 +33,11 @@ make sure that you have `geopandas==0.10.2`. Also, for apple silicon users, vsco
 
 * **Running**:
 
-TBD 
+After downloading the data from [this link](https://uofi.box.com/s/nzdbbatyhousoretgh6lxhdjqflq07sj), you can run the following commands for the following experiments:
+```
+# for log filtering at 10% ratio sampling and specialized neural nets for a detect 
+python main.py 
+```
 
 * **Analysis**
 TBD 
